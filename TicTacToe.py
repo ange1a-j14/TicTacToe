@@ -1,4 +1,5 @@
 class Board:
+   #create either 3x3 empty board or 3x3 example board with position numbers
    def __init__(self, board="empty"):
       self.board = [["_", "_", "_"],["_", "_", "_"],["_", "_", "_"]] if board=="empty" else [["0", "1", "2"], ["3", "4", "5"], ["6", "7", "8"]]
    
@@ -25,7 +26,18 @@ class Board:
       return False
 
    def checkDiags(self):
-      return (self.board[0][0] != "_" and self.board[0][0] == board[1][1] and self.board[0][0] == self.board[2][2]) or (self.board[0][2] != "_" and self.board[0][2] == self.board[1][1] and self.board[0][2] == self.board[2][0])
+      return (self.board[0][0] != "_" and self.board[0][0] == self.board[1][1] and self.board[0][0] == self.board[2][2]) or (self.board[0][2] != "_" and self.board[0][2] == self.board[1][1] and self.board[0][2] == self.board[2][0])
+
+   def isFilled(self):
+      for row in range(3):
+         for col in range(3):
+            if self.board[row][col] == "_": return False
+      return True
+
+   def clearBoard(self):
+      for row in range(3):
+         for col in range(3):
+            self.board[row][col] = "_"
 
 class GameControl:
    def __init__(self, board, player1Name="Player 1", player2Name = "Player 2"):
@@ -60,7 +72,9 @@ class GameControl:
       if self.board.checkRows() or self.board.checkCols() or self.board.checkDiags():
          print("\n" + self.nextPlayer, "has won!")
          return True
-      return False
+      if self.board.isFilled():
+         print("\n", self.player1Name, "and", self.player2Name, "have tied!")
+         return True
 
    def newGame(self):
       while not(self.gameOver()):
@@ -68,8 +82,10 @@ class GameControl:
          self.updateCurrPlayer()
       playAgain = "a"
       while playAgain != "y" and playAgain != "n":
-         playAgain = input("Would you like to play again? (y/n)")
-      if playAgain == "y": newGame()
+         playAgain = input("Would you like to play again? (y/n)\n")
+      if playAgain == "y": 
+         self.board.clearBoard()
+         self.newGame()
       else: print("Thanks for playing!")
 
 player1 = input("Who is player one?\n")
