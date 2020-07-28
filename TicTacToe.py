@@ -2,6 +2,7 @@ class Board:
    #create either 3x3 empty board or 3x3 example board with position numbers
    def __init__(self, board="empty"):
       self.board = [["_", "_", "_"],["_", "_", "_"],["_", "_", "_"]] if board=="empty" else [["0", "1", "2"], ["3", "4", "5"], ["6", "7", "8"]]
+      self.booleanboard = [[False, False, False],[False, False, False],[False, False, False]]
    
    def display(self):
       print("\n_____________", end='') #9 underscores
@@ -12,6 +13,7 @@ class Board:
    
    def updateBoard(self, move, row, col):
       self.board[row][col] = move
+      self.booleanboard[row][col] = True
 
    def checkRows(self):
       for row in range(3):
@@ -38,6 +40,7 @@ class Board:
       for row in range(3):
          for col in range(3):
             self.board[row][col] = "_"
+            self.booleanboard[row][col] = False
 
 class GameControl:
    def __init__(self, board, player1Name="Player 1", player2Name = "Player 2"):
@@ -54,9 +57,11 @@ class GameControl:
 
    def makeMove(self):
       example = Board("number")
-      position = -1
-      while position < 0 or position > 9:
+      example.display()
+      position = int(input("\n" + self.currPlayer + ", please select a number corresponding to a position on the board.\n"))
+      while (position < 0 or position > 9) or self.isTaken(position):
          example.display()
+         print("\nThat was not a valid position")
          position = int(input("\n" + self.currPlayer + ", please select a valid position.\n"))
       rowCol = self.findPosition(position)
       self.board.updateBoard("x" if self.currPlayer == self.player1Name else "o", rowCol[0], rowCol[1])
@@ -67,6 +72,10 @@ class GameControl:
       if position < 3: return [0, position]
       elif position < 6: return [1, position - 3]
       else: return [2, position - 6]
+
+   def isTaken(self, position):
+      rowCol = self.findPosition(position)
+      return self.board.booleanboard[rowCol[0]][rowCol[1]]
 
    def gameOver(self):
       if self.board.checkRows() or self.board.checkCols() or self.board.checkDiags():
