@@ -61,8 +61,11 @@ class GameControl:
       position = int(input("\n" + self.currPlayer + ", please select a number corresponding to a position on the board.\n"))
       while (position < 0 or position > 9) or self.isTaken(position):
          example.display()
-         print("\nThat was not a valid position")
-         position = int(input("\n" + self.currPlayer + ", please select a valid position.\n"))
+         print("\nThat was not a valid position.")
+         try:
+            position = int(input("\n" + self.currPlayer + ", please select a valid position.\n"))
+         except:
+            position = -1
       rowCol = self.findPosition(position)
       self.board.updateBoard("x" if self.currPlayer == self.player1Name else "o", rowCol[0], rowCol[1])
       self.board.display()
