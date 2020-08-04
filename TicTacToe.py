@@ -77,13 +77,18 @@ class GameControl:
       self.board.display()
 
    def makeMoveAuto(self):
-      position = random.randint(0, 8)
-      while (self.isTaken(position)):
-         position = random.randint(0, 8)
+      position = self.choosePositionAuto()
       rowCol = self.findPosition(position)
       self.board.updateBoard("o", rowCol[0], rowCol[1])
       self.board.display()
    #precondition: position E [0, 8]
+
+   def choosePositionAuto(self):
+      position = random.randint(0, 8)
+      while (self.isTaken(position)):
+         position = random.randint(0, 8)
+      return position
+
    def findPosition(self, position):
       if position < 3: return [0, position]
       elif position < 6: return [1, position - 3]
@@ -114,8 +119,10 @@ class GameControl:
       else: print("Thanks for playing!")
 
 player1 = input("Who is player one?\n")
+auto = input("Is there a player two? (y/n)\n")
 while auto != "y" and auto != "n":
          auto = input("Is there a player two? (y/n)\n")
+auto = False if auto == "y" else True
 if (not auto):
    player2 = input("Who is player two?\n")
 game = GameControl(Board(), player1, player2 if not auto else "Computer", auto)
