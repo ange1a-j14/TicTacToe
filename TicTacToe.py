@@ -1,3 +1,5 @@
+import random
+
 class Board:
    #create either 3x3 empty board or 3x3 example board with position numbers
    def __init__(self, board="empty"):
@@ -43,12 +45,13 @@ class Board:
             self.booleanboard[row][col] = False
 
 class GameControl:
-   def __init__(self, board, player1Name="Player 1", player2Name = "Player 2"):
+   def __init__(self, board, player1Name="Player 1", player2Name = "Player 2", autoOpponent = False):
       self.board = board
       self.player1Name = player1Name
       self.player2Name = player2Name
       self.currPlayer = player1Name
       self.nextPlayer = player2Name
+      self.autoOpponent = autoOpponent
    
    def updateCurrPlayer(self):
       temp = self.currPlayer
@@ -56,10 +59,13 @@ class GameControl:
       self.nextPlayer = temp
 
    def makeMove(self):
+      if(self.autoOpponent and self.currPlayer == self.player2Name):
+         self.makeMoveAuto()
+         return
       example = Board("number")
       example.display()
       position = int(input("\n" + self.currPlayer + ", please select a number corresponding to a position on the board.\n"))
-      while (position < 0 or position > 9) or self.isTaken(position):
+      while (position < 0 or position > 8) or self.isTaken(position):
          example.display()
          print("\nThat was not a valid position.")
          try:
@@ -70,6 +76,13 @@ class GameControl:
       self.board.updateBoard("x" if self.currPlayer == self.player1Name else "o", rowCol[0], rowCol[1])
       self.board.display()
 
+   def makeMoveAuto(self):
+      position = random.randint(0, 8)
+      while (self.isTaken(position)):
+         position = random.randint(0, 8)
+      rowCol = self.findPosition(position)
+      self.board.updateBoard("o", rowCol[0], rowCol[1])
+      self.board.display()
    #precondition: position E [0, 8]
    def findPosition(self, position):
       if position < 3: return [0, position]
@@ -101,6 +114,8 @@ class GameControl:
       else: print("Thanks for playing!")
 
 player1 = input("Who is player one?\n")
-player2 = input("Who is player two?\n")
-game = GameControl(Board(), player1, player2)
+auto = input("Is there a player two? (y/n)\n")
+if (not auto):
+   player2 = input("Who is player two?\n")
+game = GameControl(Board(), player1, player2 if not auto else "Computer", auto)
 game.newGame()
