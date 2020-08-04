@@ -114,7 +114,8 @@ class GameControl:
       else: print("Thanks for playing!")
 
 player1 = input("Who is player one?\n")
-auto = input("Is there a player two? (y/n)\n")
+while auto != "y" and auto != "n":
+         auto = input("Is there a player two? (y/n)\n")
 if (not auto):
    player2 = input("Who is player two?\n")
 game = GameControl(Board(), player1, player2 if not auto else "Computer", auto)
